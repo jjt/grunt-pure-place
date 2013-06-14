@@ -1,0 +1,29 @@
+{
+  "name": "grunt-pure-place",
+  "version": "0.0.0",
+  "description": "Generates Sass placeholders from Pure classes",
+  "main": "grunt-pure-place.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jjt/grunt-pure-place.git"
+  },
+  "keywords": [
+    "PureCss",
+    "Pure",
+    "YUI",
+    "Pure",
+    "Scss",
+    "Sass",
+    "Placeholders"
+  ],
+  "author": "Jason Trill <jason@jasontrill.com>",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "d28044514805b40c27fec76a74ef379ef44ec492",
+  "bugs": {
+    "url": "https://github.com/jjt/grunt-pure-place/issues"
+  }
+}
