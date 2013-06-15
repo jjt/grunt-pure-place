@@ -1,8 +1,8 @@
 {
   "name": "grunt-pure-place",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Generates Sass placeholders from Pure classes",
-  "main": "grunt-pure-place.js",
+  "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,5 +25,9 @@
   "gitHead": "d28044514805b40c27fec76a74ef379ef44ec492",
   "bugs": {
     "url": "https://github.com/jjt/grunt-pure-place/issues"
-  }
+  },
+  "dependencies": {
+    "rework": "~0.16.0"
+  },
+  "devDependencies": {}
 }

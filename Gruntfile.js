@@ -5,6 +5,16 @@
  
 module.exports = function(grunt) {
   
+  var initConfigObj = {
+      files: 'src/**/css/*.css',
+      dest: 'scss'
+    };
+
+  // NPM link won't pick up this package locally for me so let's do this for now
+  grunt.config.set('pure-place', initConfigObj);
+  // grunt.initConfig(initConfigObj);
+
+    
   grunt.registerMultiTask('pure-place', 'Builds SCSS files with placeholders.', function () {
     var _ = grunt.util._;
     var rework = require('rework');
@@ -92,4 +102,8 @@ module.exports = function(grunt) {
       async.forEach(srcFiles, fileFn.bind(this), filesDoneFn.bind(this), done);
     });
   });
+
+  // Local linking issues
+  // grunt.registerTask('default', 'pure-place');
+
 }
