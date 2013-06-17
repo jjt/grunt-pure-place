@@ -83,6 +83,8 @@ module.exports = function(grunt) {
           return next();
         }
 
+        grunt.file.copy(path.resolve('../lib/_grid-functions.scss'), 'scss/');
+
         // Master file that @imports all of the modules
         var placeholders_dest = "scss/_pure-placeholders.scss",
             classes_dest = "scss/_pure-classes.scss";
