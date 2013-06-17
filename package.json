@@ -1,6 +1,6 @@
 {
   "name": "grunt-pure-place",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generates Sass placeholders from Pure classes",
   "main": "Gruntfile.js",
   "scripts": {
