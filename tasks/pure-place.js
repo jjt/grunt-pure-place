@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         var srcCode = grunt.file.read(srcFile);
 
         // Rework does all of the transformation
-        var purePlaceRework = require('./lib/pure-place-rework'),
+        var purePlaceRework = require('../lib/pure-place-rework'),
           cleancss = require('clean-css');
         
         // Generate placeholders file path
