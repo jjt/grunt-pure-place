@@ -65,8 +65,7 @@ module.exports = (grunt) ->
           grunt.log.writeln err
           return next()
 
-        filesToCopy =
-          "_grid-functions.scss"
+        filesToCopy = "_grid-functions.scss",
           "_grid-classes.scss"
 
         for filename in filesToCopy
