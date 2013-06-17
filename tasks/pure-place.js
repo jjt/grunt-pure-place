@@ -84,7 +84,7 @@ module.exports = function(grunt) {
         }
 
         path = require('path');
-        grunt.file.copy(__dirname + '/../lib/_grid-functions.scss'), 'scss/');
+        grunt.file.copy(__dirname + '/../lib/_grid-functions.scss', 'scss/');
 
         // Master file that @imports all of the modules
         var placeholders_dest = "scss/_pure-placeholders.scss",
