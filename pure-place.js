@@ -84,6 +84,7 @@ module.exports = function(grunt) {
         }
 
         path = require('path');
+        var filesToCopy = ['../lib/_grid-functions.scss'];
         grunt.file.copy(__dirname + '/../lib/_grid-functions.scss', 'scss/');
 
         // Master file that @imports all of the modules
