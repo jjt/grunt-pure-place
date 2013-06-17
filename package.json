@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "rework": "~0.16.0",
-    "PrettyCSS": "~0.3.7",
     "clean-css": "~1.0.10"
   },
   "devDependencies": {
