@@ -5,15 +5,23 @@
  
 module.exports = function(grunt) {
   
-  var initConfigObj = {
+  // NPM link won't pick up this package locally on my box
+  // So for now, see if we got called by one of these methods:
+  // 
+  // grunt.loadNpmTasks('pure-place')
+  // require('pure-place')(grunt)
+  var gruntLoaded = Object.keys(grunt.config.data).length > 0,
+    initConfigObj = {
       files: 'src/**/css/*.css',
       dest: 'scss'
-    };
+    }
 
-  // NPM link won't pick up this package locally for me so let's do this for now
-  grunt.config.set('pure-place', initConfigObj);
-  // grunt.initConfig(initConfigObj);
-
+  if(gruntLoaded)
+    grunt.config.set('pure-place', initConfigObj);
+  else
+    grunt.initConfig({
+      'pure-place': initConfigObj
+    });
     
   grunt.registerMultiTask('pure-place', 'Builds SCSS files with placeholders.', function () {
     var _ = grunt.util._;
@@ -30,7 +38,8 @@ module.exports = function(grunt) {
     var async = grunt.util.async;
     var done = this.async();
 
-    var pureFiles = {};
+    var placeholderFiles = {},
+      classesFiles = {};
 
     async.forEach(this.files, function(file, next) {
       var src = _.isFunction(file.src) ? file.src() : file.src;
@@ -38,36 +47,58 @@ module.exports = function(grunt) {
 
       var fileFn,filesDoneFn;
 
+      // Process each file
       fileFn = function(srcFile, nextF) {
         var srcCode = grunt.file.read(srcFile);
-        var css = rework(srcCode).use(function(style){
-            style.rules.forEach(function(rule, ruleIndex) {
-              if(rule.selectors !== undefined)
-                rule.selectors.forEach(function(selector, selectorIndex){
-                  newSel = selector.replace(/\.pure/g, '%pure');
-                  style.rules[ruleIndex].selectors[selectorIndex] = newSel;
-                });
-            });
-          }).toString(options.toString);
 
-        // Generate dest path
+        // Rework does all of the transformation
+        var purePlaceRework = require('./lib/pure-place-rework'),
+          cleancss = require('clean-css');
+        
+        // Generate placeholders file path
         var pathArr = srcFile.split('/');
         pathArr[0] = options.dest;
         pathArr.splice(2,1);
         var filename = pathArr.pop();
         filename = "_" + filename.replace(/css$/, 'scss');
         pathArr.push(filename);
-        var dest = pathArr.join('/')
+        var placeholder_dest = pathArr.join('/');
 
-        // Build up master pure file
+
+        // Build up filenames for _pure-placeholders.scss
         var folder = pathArr[1];
-        if(pureFiles[folder] === undefined)
-          pureFiles[folder] = [];
-        pureFiles[folder].push(pathArr[2]);
+        if(placeholderFiles[folder] === undefined)
+          placeholderFiles[folder] = [];
+        placeholderFiles[folder].push(pathArr[2]);
 
-        grunt.file.write(dest, css);
-        grunt.log.oklns('File "' + dest + '" created.');
-        nextF();
+        // Generate pure extended classes filepath
+        pathArr.push(pathArr.pop().replace(/\.scss$/, '-classes.scss')); 
+        var classes_dest = pathArr.join('/');
+
+        // Build up filenames for _pure-classes.scss
+        var folder = pathArr[1];
+        if(classesFiles[folder] === undefined)
+          classesFiles[folder] = [];
+        classesFiles[folder].push(pathArr[2]);
+        
+
+
+        var cleancssObj = {
+          keepBreaks:true
+        }
+        var placeholder_css = purePlaceRework.getPlaceholderCSS(srcCode, toString);
+        placeholder_css = cleancss.process(placeholder_css, cleancssObj);
+
+        grunt.file.write(placeholder_dest, placeholder_css);
+        grunt.log.oklns('File "' + placeholder_dest + '" created.');
+
+        var classes_css = purePlaceRework.getPureClassesCSS(srcCode, toString);
+        //classes_css = cleancss.process(classes_css, cleancssObj);
+
+        grunt.file.write(classes_dest, classes_css);
+        grunt.log.oklns('File "' + classes_dest + '" created.');
+
+        nextF()
       }
         
       filesDoneFn = function(err){
@@ -75,27 +106,52 @@ module.exports = function(grunt) {
           grunt.log.writeln(err);
           return next();
         }
+
+        // Master file that @imports all of the modules
+        var placeholders_dest = "scss/_pure-placeholders.scss",
+            classes_dest = "scss/_pure-classes.scss";
+
         var out = "// Pure built as SASS placeholders\n\n";
-        var dest_file = "scss/_pure.scss";
-        for(k in pureFiles) {
-          var v = pureFiles[k]; 
-          if(!pureFiles.hasOwnProperty(k))
+        for(k in placeholderFiles) {
+          var v = placeholderFiles[k]; 
+          if(!placeholderFiles.hasOwnProperty(k))
             continue;
           // Handle the base files differently
           if(k === 'base') {
-            out += "@import \"base/normalize\";\n";
+            out += "// Copy this line to mystyles.scss and uncomment\n";
+            out += "//@import \"base/normalize\";\n\n";
             out += "@import \"base/normalize-context\";\n";
             out += "\n";
             continue;
           }
           out += "/* " + k[0].toUpperCase() + k.substr(1) + "*/\n";
-          pureFiles[k].forEach(function(filename) {
+          placeholderFiles[k].forEach(function(filename) {
             out += '@import "' + k + "/" + filename.substr(1) + "\";\n";
           });
-          out += "\n"; 
+
         }
-        grunt.file.write(dest_file,out);
-        grunt.log.oklns('File ' + dest_file + ' created');
+
+        grunt.file.write(placeholders_dest,out);
+        grunt.log.oklns('File ' + placeholders_dest + ' created');
+
+
+        var out = "// Pure built as SASS classes with a custom prefix\n\n";
+        out += "// Default prefix\n$pure-classes-prefix: pure !default;\n\n";
+        for(k in classesFiles) {
+          var v = classesFiles[k]; 
+          if(!classesFiles.hasOwnProperty(k))
+            continue;
+          out += "/* " + k[0].toUpperCase() + k.substr(1) + "*/\n";
+          classesFiles[k].forEach(function(filename) {
+            out += '@import "' + k + "/" + filename.substr(1) + "\";\n";
+          });
+        }
+
+        grunt.file.write(classes_dest,out);
+        grunt.log.oklns('File ' + classes_dest + ' created');
+
+
+
         next();
       }
 
@@ -103,7 +159,7 @@ module.exports = function(grunt) {
     });
   });
 
-  // Local linking issues
-  // grunt.registerTask('default', 'pure-place');
+  if(gruntLoaded) 
+    grunt.registerTask('default', 'pure-place');
 
 }

@@ -27,7 +27,12 @@
     "url": "https://github.com/jjt/grunt-pure-place/issues"
   },
   "dependencies": {
-    "rework": "~0.16.0"
+    "rework": "~0.16.0",
+    "PrettyCSS": "~0.3.7",
+    "clean-css": "~1.0.10"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "css-stringify": "~1.3.1"
+  }
 }
