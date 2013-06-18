@@ -4,21 +4,27 @@
 // Based off of https://github.com/jney/grunt-rework
  
 module.exports = function(grunt) {
-  
-  // NPM link won't pick up this package locally on my box
-  // So for now, see if we got called by one of these methods:
-  // 
-  // grunt.loadNpmTasks('pure-place')
-  // require('pure-place')(grunt)
-  
 
   grunt.initConfig({
-    'pure-place': {
+    'pure-place-src': {
       files: 'src/**/css/*.css',
-      dest: 'scss'
+      options: {
+        dest: 'scss'
+      }
+    },
+    'pure-place-build': {
+      files: 'build/*.css',
+      options: {
+        dest: 'scss-build'
+      }
     }
   });
+
   grunt.loadTasks('tasks');
-  grunt.registerTask('default', 'pure-place');
+
+  grunt.registerTask('pure-place-src', ['pure-place-src']);
+  grunt.registerTask('pure-place-build', ['pure-place-build']);
+
+  grunt.registerTask('default', 'pure-place-build');
 
 }

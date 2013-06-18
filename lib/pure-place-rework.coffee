@@ -1,5 +1,12 @@
 placeholderFn = (style) ->
   style.rules.forEach (rule, ruleIndex, arr) ->
+    if rule.declarations?
+      rule.declarations.forEach (dec, decIndex) ->
+        if dec.type == "comment"
+          delete style.rules[ruleIndex].declarations[decIndex]
+    if rule.type == "comment"
+      delete style.rules[ruleIndex]
+      return
     if rule.media?
       return placeholderFn(rule)
     if rule.selectors isnt undefined
