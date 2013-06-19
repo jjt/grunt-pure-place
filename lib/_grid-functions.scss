@@ -1,5 +1,9 @@
 $pure-grid-g-prefixes: pure-g !default;
 $pure-grid-u-prefixes: pure-u !default;
+$pure-grid-u-classes: pure !default;
+$pure-grid-divisor: 24 !default;
+$pure-grid-ratio-index: get-pure-grid-ratio-index($pure-grid-divisor);
+$pure-grid-units: nth($pure-grid-ratios-compounded, $pure-grid-ratio-index);
 
 // Sass has its limitations and it's 2:22am
 $pure-grid-ratios-compounded:
@@ -27,11 +31,6 @@ $pure-grid-ratios-compounded:
   @return $ret;
 }
 
-$pure-grid-divisor: 24 !default;
-$pure-grid-ratio-index: get-pure-grid-ratio-index($pure-grid-divisor);
-
-$pure-grid-units: nth($pure-grid-ratios-compounded, $pure-grid-ratio-index);
-
 
 
 @mixin pure-r-media-all($query) {
@@ -40,13 +39,12 @@ $pure-grid-units: nth($pure-grid-ratios-compounded, $pure-grid-ratio-index);
       @each $pure-u in join($pure-grid-u-prefixes, $pure-grid-u-classes) {
         .#{$pure-g} > .#{$pure-u},
         .#{$pure-g} > [class *= "#{$pure-u}-"] {
-          width: 100;
+          width: 100%;
         }
       }
     }  
   }
 }
-
 
 @mixin output-pure-grid-r-classes() {
   @include pure-r-media-all("max-width: 480px");

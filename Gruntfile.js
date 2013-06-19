@@ -6,16 +6,16 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
-    'pure-place-src': {
-      files: 'src/**/css/*.css',
-      options: {
-        dest: 'scss'
-      }
-    },
     'pure-place-build': {
       files: 'build/*.css',
       options: {
         dest: 'scss-build'
+      }
+    },
+    'pure-place-src': {
+      files: 'src/**/css/*.css',
+      options: {
+        dest: 'scss'
       }
     }
   });
